@@ -1,4 +1,4 @@
-(ns org.clojars.kokos.scrap.extractors
+(ns scrap.extractors
   (:require [clojure.string :as s])
   (:gen-class))
 

@@ -1,4 +1,4 @@
-(ns org.clojars.kokos.browser.header
+(ns browser.header
   (:require [clojure.string :as s])
   (:gen-class))
 

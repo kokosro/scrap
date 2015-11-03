@@ -1,4 +1,4 @@
-(ns org.clojars.kokos.scrap.rules
+(ns scrap.rules
   (:require [scrap.core :as scrap])
   (:require [scrap.extractors :as extract])
   (:gen-class))

@@ -1,4 +1,4 @@
-(ns org.clojars.kokos.scrap.core
+(ns scrap.core
   (:require [net.cgrand.enlive-html :as html])
   (:require [clojure.string :as s])  
   (:gen-class))

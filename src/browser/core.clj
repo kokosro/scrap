@@ -1,10 +1,10 @@
-(ns org.clojars.kokos.browser.core
+(ns browser.core
   (:require [clj-http.cookies])
   (:require [clj-http.client :as client])
   (:require [uri.core :as u])
   (:require [clojure.string :as s])
   (:use [slingshot.slingshot :only [try+]])
-  (:require [org.clojars.kokos.browser.header :as header])
+  (:require [browser.header :as header])
   (:gen-class))
 
 (defn build-response [url response]
