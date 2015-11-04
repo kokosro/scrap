@@ -42,13 +42,12 @@
 
 (defn compress-result [result]
   (let [x (reduce concat (list) result)]
-    (if (map? (first result))
-      (map (fn [item]
+    (map (fn [item]
              (let [main-key (first (keys item))]
-               (assoc {} main-key (merge (get item main-key) {:content (compress-result (:content (get item main-key)))})))) x)
-      (if (string? (first result))
-        (s/join " " result)
-        result))))
+               (assoc {} main-key (merge (get item main-key) {:content (if (or (map? (first (:content (get item main-key))))
+                                                                               (not (string? (first (:content (get item main-key))))))
+                                                                         (compress-result (:content (get item main-key)))
+                                                                         (s/join " " (:content (get item main-key))))})))) x)))
 
 (defn make-extractor [rules]
   (fn [page]
