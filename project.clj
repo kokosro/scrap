@@ -1,4 +1,4 @@
-(defproject org.clojars.kokos/scrap "0.1.0"
+(defproject org.clojars.kokos/scrap "0.1.1"
   :description "Extracting information from HTML resources"
   :url "https://github.com/kokosro/scrap"
   :license {:name "Eclipse Public License"

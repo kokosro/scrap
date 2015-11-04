@@ -8,6 +8,6 @@
 (defn test-scrap []
   (let [url "https://github.com/kokosro/scrap"
         response (browser/doget url)
-        links (scrap/extract rules/resource (response :body))]
-    links))
+        forms (scrap/extract rules/forms (response :body))]
+    forms))
 
