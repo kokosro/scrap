@@ -45,6 +45,12 @@
       (catch Exception e base-url))
     base-url))
 
+(defn =host? [base-host & urls]
+  (reduce #(let [url-info (u/uri->map (u/make %2))]
+             (and %1 (or (= base-host (:host url-info))
+                         (= base-host (s/replace (:host url-info) #"www\." ""))))) true urls))
+
+
 
 (defn- not-a-valid-url-response [url]
   {:body ""
