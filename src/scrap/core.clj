@@ -32,7 +32,7 @@
     (map keyword (s/split selector #" "))
     selector))
 
-(defn- source [from]
+(defn source [from]
   (if (string? from)
     (html/html-resource (java.io.StringReader. from))
     from))
