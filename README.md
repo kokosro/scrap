@@ -62,7 +62,7 @@ returns
  )
 ```
 
-Use of [org.clojars.kokos/browser "0.1.0"](https://clojars.org/org.clojars.kokos/browser) is volunary. 
+Use of [[org.clojars.kokos/browser "0.1.0"]](https://clojars.org/org.clojars.kokos/browser) is volunary. 
 ***Any html string would do*** as the second argument of [scrap.core/extract](https://github.com/kokosro/scrap/blob/master/src/scrap/core.clj#L69)
 
 
