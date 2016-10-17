@@ -30,6 +30,7 @@ There are some predefined rules defined in scrap.rules
 ```clojure
 (ns example.core
   (:require [scrap.core :as scrap]
+            [scrap.rules :as rules]
             [browser.core :as browser])
   (:gen-class))
 
@@ -37,10 +38,18 @@ There are some predefined rules defined in scrap.rules
 (defn test-scrap []
   (let [url "https://github.com/kokosro/scrap"
         response (browser/doget url) ;; fetching urls
-        links (scrap/extract resources (response :body))]
+        links (scrap/extract rules/resources (response :body))
+        forms (scrap/extract rules/forms (response :body))
+        tables (scrap/extract rules/tables (response :body))
+        articles (scrap/extract rules/articles (response :body))
+        base-url (scra[/extract rules/base-url (response :body)])]
     links))
 ```
-response:
+calling
+```clojure
+(text-scrap)
+```
+returns
 ```clojure
 (
 {:url {:value {:link "#start-of-content", :data {}, :name "Skip to content"}, :content ()}} 
