@@ -3,49 +3,84 @@
   (:require [scrap.extractors :as extract])
   (:gen-class))
 
-(scrap/defrule resource 
-  (scrap/an url [:a] {:link (extract/atribut url :href)
-                      :name (extract/content url)})
-  (scrap/an url [:link] {:link (extract/atribut url :href)
-                   :name (extract/atribut url :rel)})
-  (scrap/an url [:script] {:link (extract/atribut url :src)
-                     :name (extract/atribut url :type)}))
-(comment
-  (scrap/an url [:img] {:link (extract/atribut url :src)
-                  :name (extract/atribut url :alt)}))
-
-(scrap/defrule links
-  (scrap/an url [:a] {:link (extract/atribut url :href)
-                      :class (extract/atribut url :class)
-                      :alt (extract/atribut url :alt)
-                      :name (extract/content url)}))
-
-(scrap/defrule articles
-  (scrap/an article [:article.post] {}
-            :with [(scrap/an title [:header.entry-header :.entry-title :a] (extract/content title))
-                   (scrap/an author [:.entry-meta :.author :a] (extract/content author))
-                   (scrap/an paragraph [:.entry-content :p] (extract/content paragraph))]))
+(refer 'scrap.core :only '[an a defrule])
+(refer 'scrap.extractors :only '[attribut content attributs data-attrs])
 
 
-(scrap/defrule base-url
-  (scrap/an url [:base] (extract/atribut url :href)))
 
-(scrap/defrule forms
-  (scrap/an form [:form]
-            {:method (extract/atribut form :method)
-             :name (extract/atribut form :name)
-             :class (extract/atribut form :class)
-             :action (extract/atribut form :action)}
-            :with [(scrap/an input [:input] {:type (extract/atribut input :type)
-                                             :name (extract/atribut input :name)
-                                             :id (extract/atribut input :id)
-                                             :value (extract/atribut input :value)
-                                             :checked (extract/atribut input :checked)})
-                   (scrap/an textarea [:textarea] {:name (extract/atribut textarea :name)
-                                                   :value (extract/content textarea)
-                                                   :id (extract/atribut textarea :id)})
-                   (scrap/an select [:select] {:name (extract/atribut select :name)
-                                               :id (extract/atribut select :id)}
-                             :with [(scrap/an option [:option] {:value (extract/atribut option :value)
-                                                                :selected (extract/atribut option :selected)
-                                                                :label (extract/content option)})])]))
+(defrule resources
+  (an url [:a] {:link (attribut url :href)
+                :data (data-attrs url)
+                :name (content url)})
+  (an url [:link] {:link (attribut url :href)
+                   :data (data-attrs url)
+                   :name (attribut url :rel)})
+  (an url [:script] {:link (attribut url :src)
+                     :data (data-attrs url)
+                     :name (attribut url :type)}))
+
+
+(defrule links
+  (an url [:a] {:link (attribut url :href)
+                :data (data-attrs url)
+                :class (attribut url :class)
+                :alt (attribut url :alt)
+                :name (content url)}))
+
+(defrule articles
+  (an article [:article.post] 
+      {:data (data-attrs article)}
+      :with [(a title [:header.entry-header :.entry-title :a] (content title))
+             (an author [:.entry-meta :.author :a] (content author))
+             (a paragraph [:.entry-content :p] (content paragraph))]))
+
+(defrule base-url
+  (an url [:base] (attribut url :href)))
+
+(defrule forms
+  (a form [:form]
+     {:method (attribut form :method)
+      :data (data-attrs form)
+      :name (attribut form :name)
+      :class (attribut form :class)
+      :action (attribut form :action)}
+     :with [(an input [:input] {:type (attribut input :type)
+                                :name (attribut input :name)
+                                :id (attribut input :id)
+                                :value (attribut input :value)
+                                :checked (attribut input :checked)})
+            (a textarea [:textarea] {:name (attribut textarea :name)
+                                     :value (content textarea)
+                                     :id (attribut textarea :id)})
+            (a select [:select] {:name (attribut select :name)
+                                 :id (attribut select :id)}
+               :with [(an option [:option] {:value (attribut option :value)
+                                            :selected (attribut option :selected)
+                                            :label (content option)})])]))
+
+
+(defrule tables
+  (a table [:table]
+     {:class (attribut table :class)
+      :data (data-attrs table)
+      :id (attribut table :id)}
+     :with [(a head [:thead]
+               {:class (attribut head :class)}
+               :with [(a row [:tr]
+                         {:data (data-attrs row)}
+                         :with [(a column [:th]
+                                   (content column))])])
+            (a body [:tbody]
+               {:class (attribut body :class)
+                :data (data-attrs body)}
+               :with [(a row [:tr]
+                         {:class (attribut row :class)
+                          :data (data-attrs row)}
+                         :with [(a column [:td]
+                                   (content column))])])
+            (a footer [:tfoot]
+               {:class (attribut footer :class)}
+               :with [(a row [:tr]
+                         {:class (attribut row :class)}
+                         :with [(a column [:td]
+                                   (content column))])])]))

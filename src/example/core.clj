@@ -5,11 +5,13 @@
             [browser.core :as browser])
   (:gen-class))
 
+(refer 'scrap.core :only '[extract])
+
 
 (defn test-scrap []
   (let [url "https://github.com/kokosro/scrap"
         response (browser/doget url)
-        forms (scrap/extract rules/forms (response :body))]
+        forms (extract rules/resources (response :body))]
     forms))
 
 
@@ -54,8 +56,10 @@
   (let [response (browser/doget url)
         links (if (= (:content-type response) "text/plain")
                 []
-                (doall (map (fn [link] {:url (browser/normalize-url (str url "/") (:link (:value (:url link))))
-                                        :name (:name (:value (:url link)))}) (scrap/extract rules/links (response :body)))))]
+                (doall (map (fn [link] {:url (browser/normalize-url (str url "/") 
+                                                                    (:link (:value (:url link))))
+                                        :name (:name (:value (:url link)))}) 
+                            (extract rules/links (response :body)))))]
     (mark-done url)
     (println url (:content-type response))
     (save-to-file (get-url-name url) (:body response))

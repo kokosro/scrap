@@ -8,15 +8,20 @@ Provides a scraping library and a library for fetching content from urls that us
 
 scrap.core library contains macros for creating rules for extractions.
 ```clojure
-(require 'scrap.core)
-(require 'scrap.extrctors)
-(scrap.core/defrule resource 
-  (scrap.core/an url [:a] {:link (scrap.extractors/atribut url :href)
-                      :name (scrap.extractors/content url)})
-  (scrap.core/an url [:link] {:link (scrap.extractors/atribut url :href)
-                   :name (scrap.extractors/atribut url :rel)})
-  (scrap.core/an url [:script] {:link (scrap.extractors/atribut url :src)
-                     :name (scrap.extractors/atribut url :type)}))
+
+(refer 'scrap.core :only '[an a defrule])
+(refer 'scrap.extractors :only '[attribut content attributs data-attrs])
+
+(defrule resources 
+  (an url [:a] {:link (attribut url :href)
+                :data (data-attrs url)
+                :name (content url)})
+  (an url [:link] {:link (attribut url :href)
+                   :data (attributs url #"data\-(.*)")
+                   :name (attribut url :rel)})
+  (an url [:script] {:link (attribut url :src)
+                     :data (data-attrs url)
+                     :name (attribut url :type)}))
 ```
 
 Above we're creating a rule for extracting resources from three different trags :a :link :sript
@@ -32,15 +37,18 @@ There are some predefined rules defined in scrap.rules
 (defn test-scrap []
   (let [url "https://github.com/kokosro/scrap"
         response (browser/doget url) ;; fetching urls
-        links (scrap/extract resource (response :body))]
+        links (scrap/extract resources (response :body))]
     links))
 ```
 response:
 ```clojure
-({:url {:content (), :value {:link "#start-of-content", :name "Skip to content"}}} 
- {:url {:content (), :value {:link "https://github.com/", :name ""}}} 
- {:url {:content (), :value {:link "/join", :name "Sign up"}}} 
- {:url {:content (), :value {:link "/login?return_to=%2Fkokosro%2Fscrap", :name "Sign in"}}}
+(
+{:url {:value {:link "#start-of-content", :data {}, :name "Skip to content"}, :content ()}} 
+{:url {:value {:link "https://github.com/", :data {:ga-click nil}, :name ""}, :content ()}} 
+{:url {:value {:link "/personal", :data {:ga-click nil, :selected-links nil}, :name "Personal"}, :content ()}} 
+{:url {:value {:link "/open-source", :data {:ga-click nil, :selected-links nil}, :name "Open source"}, :content ()}} 
+{:url {:value {:link "/business", :data {:ga-click nil, :selected-links nil}, :name "Business"}, :content ()}}
+
  ;and many more.....
  )
 ```

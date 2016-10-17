@@ -23,8 +23,11 @@
   `(drule [~tag-name ~selector]
           ~extract-code
           ~@(if (vector? with)
-                with
-                [with])))
+              with
+              [with])))
+(defmacro a [& body]
+  `(an ~@body))
+
 
 
 (defn- css-selector [selector]
@@ -43,11 +46,12 @@
 (defn compress-result [result]
   (let [x (reduce concat (list) result)]
     (map (fn [item]
-             (let [main-key (first (keys item))]
-               (assoc {} main-key (merge (get item main-key) {:content (if (or (map? (first (:content (get item main-key))))
-                                                                               (not (string? (first (:content (get item main-key))))))
-                                                                         (compress-result (:content (get item main-key)))
-                                                                         (s/join " " (:content (get item main-key))))})))) x)))
+           (let [main-key (first (keys item))]
+             (assoc {} main-key (merge (get item main-key) 
+                                       {:content (if (or (map? (first (:content (get item main-key))))
+                                                         (not (string? (first (:content (get item main-key))))))
+                                                   (compress-result (:content (get item main-key)))
+                                                   (s/join " " (:content (get item main-key))))})))) x)))
 
 (defn make-extractor [rules]
   (fn [page]
@@ -57,9 +61,10 @@
                (map (fn [selected]
                       (let [extraction ((:extract rule) selected)]
                         (assoc {} (:name rule)
-                           (merge {:value extraction}
-                                  (assoc {} (:content-name rule)
-                                         ((make-extractor (:content rule)) selected)))))) (rule-selection page rule)))) rules))))
+                          (merge {:value extraction}
+                                 (assoc {} (:content-name rule)
+                                   ((make-extractor (:content rule)) selected)))))) 
+                    (rule-selection page rule)))) rules))))
 
 (defn extract [rules from-content]
   (let [extractor (make-extractor rules)
