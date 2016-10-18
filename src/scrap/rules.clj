@@ -49,9 +49,9 @@
                                 :id (attribut input :id)
                                 :value (attribut input :value)
                                 :checked (attribut input :checked)})
-            (a textarea [:textarea] {:name (attribut textarea :name)
-                                     :value (content textarea)
-                                     :id (attribut textarea :id)})
+            (an input [:textarea] {:name (attribut input :name)
+                                     :value (content input)
+                                     :id (attribut input :id)})
             (a select [:select] {:name (attribut select :name)
                                  :id (attribut select :id)}
                :with [(an option [:option] {:value (attribut option :value)
