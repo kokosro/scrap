@@ -1,4 +1,4 @@
-(defproject org.clojars.kokos/scrap "0.2.1"
+(defproject org.clojars.kokos/scrap "0.2.2"
   :description "Extracting information from HTML resources"
   :url "https://github.com/kokosro/scrap"
   :license {:name "Eclipse Public License"
@@ -7,7 +7,6 @@
                    :sign-releases false}]]
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [clj-http "2.3.0"]
-                 [org.clojars.kokos/browser "0.1.0"]
                  [crouton "0.1.2"]
                  [uri "1.1.0"]
                  [clj-time "0.8.0"]
