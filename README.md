@@ -37,7 +37,11 @@ There are some predefined rules defined in scrap.rules
 
 (defn test-scrap []
   (let [url "https://github.com/kokosro/scrap"
-        response (browser/doget url) ;; fetching urls
+        brw (browser/open)
+        brw-state (brw browser/navigate url :get) ;; fetching urls
+        response (-> @brw-state
+                  :current
+                  :response)
         links (scrap/extract rules/resources (response :body))
         forms (scrap/extract rules/forms (response :body))
         tables (scrap/extract rules/tables (response :body))
@@ -47,7 +51,7 @@ There are some predefined rules defined in scrap.rules
 ```
 calling
 ```clojure
-(text-scrap)
+(test-scrap)
 ```
 returns
 ```clojure
@@ -62,7 +66,7 @@ returns
  )
 ```
 
-Use of [[org.clojars.kokos/browser "0.1.0"]](https://clojars.org/org.clojars.kokos/browser) is volunary. 
+Use of [[org.clojars.kokos/browser "0.2.0"]](https://clojars.org/org.clojars.kokos/browser) is volunary. 
 ***Any html string would do*** as the second argument of [scrap.core/extract](https://github.com/kokosro/scrap/blob/master/src/scrap/core.clj#L69)
 
 
