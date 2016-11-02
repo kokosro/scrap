@@ -7,7 +7,11 @@
                               (str r x) 
                               r)) 
                   " " 
-                  (filter string? (:content tag)))))
+                  (map (fn [t]
+                         (if (string? t)
+                           t
+                           (content t))) 
+                       (:content tag)))))
 
 (defn attributs [tag match-regex]
   (let [attrs (map #(re-find (re-matcher match-regex (name %))) (keys (:attrs tag)))
